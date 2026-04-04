@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Conta de Água</title>
+    <style>
+        :root {
+            --bg-main: #eef4ff;
+            --bg-gradient: linear-gradient(135deg, #eef4ff 0%, #f8fbff 45%, #edf2ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --primary: #1d4ed8;
+            --primary-dark: #1e3a8a;
+            --primary-soft: #dbeafe;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #d9e2f1;
+            --input-bg: #f8fafc;
+            --shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+            --success-bg: #ecfdf5;
+            --success-text: #166534;
+            --error-bg: #fef2f2;
+            --error-text: #b91c1c;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.10), transparent 30%),
+                var(--bg-gradient);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 32px 16px;
+        }
+
+        .page {
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(217, 226, 241, 0.9);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 28px 32px 20px;
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            border-bottom: 1px solid #e5edf8;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .icon-box {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(29, 78, 216, 0.18);
+            color: white;
+            font-size: 24px;
+        }
+
+        .title-group h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            letter-spacing: -0.6px;
+        }
+
+        .title-group p {
+            margin: 4px 0 0;
+            color: var(--text-muted);
+            font-size: 0.96rem;
+        }
+
+        .card-body {
+            padding: 28px 32px 32px;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .success {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid #bbf7d0;
+        }
+
+        .error {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid #fecaca;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            border-radius: var(--radius-sm);
+            padding: 14px 15px;
+            font-size: 0.98rem;
+            color: var(--text);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        input:hover,
+        select:hover,
+        textarea:hover {
+            border-color: #bdd0ea;
+            background: #fff;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.12);
+        }
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .section-note {
+            margin-top: 6px;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .textarea-wrapper {
+            background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+            border: 1px solid #e6edf7;
+            border-radius: 18px;
+            padding: 14px;
+        }
+
+        .textarea-wrapper textarea {
+            border: none;
+            box-shadow: none;
+            background: transparent;
+            padding: 6px;
+        }
+
+        .textarea-wrapper textarea:focus {
+            box-shadow: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 14px;
+            padding: 15px 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #dbe3ee;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            flex: 2;
+            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 12px 24px rgba(29, 78, 216, 0.22);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 28px rgba(29, 78, 216, 0.26);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 18px 12px;
+            }
+
+            .card-header,
+            .card-body {
+                padding: 22px 18px;
+            }
+
+            .header-top {
+                align-items: flex-start;
+            }
+
+            .title-group h1 {
+                font-size: 1.55rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                flex: 1;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="card">
+        <div class="card-header">
+            <div class="header-top">
+                <div class="icon-box">💧</div>
+                <div class="title-group">
+                    <h1>Cadastrar Conta de Água</h1>
+                    <p>Registre os dados da conta para acompanhar consumo, vencimento e pagamento.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="alert success" th:if="${success}">
+                <span th:text="${success}"></span>
+            </div>
+
+            <div class="alert error" th:if="${error}">
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/water-expenses/save}" method="post">
+                <input type="hidden" name="userId" th:value="${userId}">
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="referenceDate">Data de Referência</label>
+                        <input type="date" id="referenceDate" name="referenceDate" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="dueDate">Data de Vencimento</label>
+                        <input type="date" id="dueDate" name="dueDate" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="totalAmount">Valor Total</label>
+                        <input type="number" step="0.01" id="totalAmount" name="totalAmount" placeholder="Ex: 145.90" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="consumptionM3">Consumo (m³)</label>
+                        <input type="number" step="0.01" id="consumptionM3" name="consumptionM3" placeholder="Ex: 12.5">
+                    </div>
+
+                    <div class="field">
+                        <label for="waterAmount">Valor Água</label>
+                        <input type="number" step="0.01" id="waterAmount" name="waterAmount" placeholder="Ex: 80.00">
+                    </div>
+
+                    <div class="field">
+                        <label for="sewageAmount">Valor Esgoto</label>
+                        <input type="number" step="0.01" id="sewageAmount" name="sewageAmount" placeholder="Ex: 65.90">
+                    </div>
+
+                    <div class="field">
+                        <label for="meterReading">Leitura do Hidrômetro</label>
+                        <input type="number" step="0.01" id="meterReading" name="meterReading" placeholder="Ex: 235.7">
+                    </div>
+
+                    <div class="field">
+                        <label for="isPaid">Pago?</label>
+                        <select id="isPaid" name="isPaid" required>
+                            <option value="false">Não</option>
+                            <option value="true">Sim</option>
+                        </select>
+                    </div>
+
+                    <div class="field full">
+                        <label for="note">Observação</label>
+                        <div class="section-note">
+                            Adicione alguma informação complementar sobre essa conta, se necessário.
+                        </div>
+                        <div class="textarea-wrapper">
+                            <textarea id="note" name="note" placeholder="Digite uma observação"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="/water-expenses" class="btn btn-secondary">← Voltar</a>
+                    <button type="submit" class="btn btn-primary">Salvar Conta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

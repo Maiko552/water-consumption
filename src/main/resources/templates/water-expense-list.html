@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Contas de Água</title>
+    <style>
+        :root {
+            --bg: linear-gradient(135deg, #eef4ff 0%, #f8fbff 45%, #eef2ff 100%);
+            --card: rgba(255, 255, 255, 0.96);
+            --primary: #2563eb;
+            --primary-dark: #1e3a8a;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --line: #edf2f7;
+            --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            --success-bg: #dcfce7;
+            --success-text: #166534;
+            --warning-bg: #fee2e2;
+            --warning-text: #991b1b;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --radius-sm: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.08), transparent 30%),
+                var(--bg);
+            min-height: 100vh;
+            padding: 32px 16px;
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .title-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-box {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: white;
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.20);
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-top: 6px;
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 130px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 26px rgba(37, 99, 235, 0.22);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.18);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 26px rgba(239, 68, 68, 0.22);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: var(--card);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .summary-hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--line);
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+        }
+
+        .table-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .table-subtitle {
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #eef4ff;
+        }
+
+        th, td {
+            padding: 16px 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--line);
+            vertical-align: middle;
+        }
+
+        th {
+            color: var(--primary-dark);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+
+        td {
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .paid {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .pending {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+        }
+
+        .note-cell {
+            max-width: 260px;
+            color: #475569;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .empty {
+            padding: 56px 24px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 992px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 18px 12px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .topbar {
+                align-items: stretch;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+            }
+
+            .table-wrapper {
+                overflow: visible;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tbody {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+                padding: 14px;
+            }
+
+            tr {
+                background: #ffffff;
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 14px;
+                box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+            }
+
+            td {
+                border-bottom: none;
+                padding: 8px 0;
+            }
+
+            td::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 12px;
+                font-weight: 800;
+                color: var(--primary-dark);
+                margin-bottom: 4px;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+            }
+
+            .note-cell {
+                max-width: 100%;
+                white-space: normal;
+                overflow: visible;
+                text-overflow: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="topbar">
+        <div class="title-area">
+            <div class="icon-box">💧</div>
+            <div>
+                <h1 class="title">Histórico de Contas de Água</h1>
+                <div class="subtitle">Visualize, acompanhe e controle seus lançamentos</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a th:href="@{/water-expenses/form}" class="btn btn-primary">+ Nova conta</a>
+
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn btn-danger">Sair</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-label">Total de contas</div>
+            <div class="summary-value" th:text="${#lists.size(expenses)}">0</div>
+            <div class="summary-hint">Quantidade total cadastrada</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Contas pagas</div>
+            <div class="summary-value" th:text="${expenses.?[isPaid].size()}">0</div>
+            <div class="summary-hint">Lançamentos já quitados</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">Pendentes</div>
+            <div class="summary-value" th:text="${expenses.?[!isPaid].size()}">0</div>
+            <div class="summary-hint">Contas ainda em aberto</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-header">
+            <h2 class="table-title">Histórico cadastrado</h2>
+            <div class="table-subtitle">Aqui aparecem todas as contas registradas por você.</div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(expenses)}" class="empty">
+            <div class="empty-icon">🧾</div>
+            <div class="empty-title">Nenhuma conta cadastrada</div>
+            <div class="empty-text">Você ainda não registrou nenhuma conta de água.</div>
+            <a th:href="@{/water-expenses/form}" class="btn btn-primary">Cadastrar primeira conta</a>
+        </div>
+
+        <div class="table-wrapper" th:if="${!#lists.isEmpty(expenses)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Referência</th>
+                    <th>Vencimento</th>
+                    <th>Valor Total</th>
+                    <th>Consumo</th>
+                    <th>Status</th>
+                    <th>Observação</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="expense : ${expenses}">
+                    <td data-label="Referência"
+                        th:text="${#temporals.format(expense.referenceDate, 'dd/MM/yyyy')}">
+                        01/04/2026
+                    </td>
+
+                    <td data-label="Vencimento"
+                        th:text="${#temporals.format(expense.dueDate, 'dd/MM/yyyy')}">
+                        10/04/2026
+                    </td>
+
+                    <td data-label="Valor Total"
+                        th:text="${expense.totalAmount != null ? 'R$ ' + expense.totalAmount : '-'}">
+                        R$ 0,00
+                    </td>
+
+                    <td data-label="Consumo"
+                        th:text="${expense.consumptionM3 != null ? expense.consumptionM3 + ' m³' : '-'}">
+                        -
+                    </td>
+
+                    <td data-label="Status">
+                        <span th:if="${expense.isPaid}" class="status paid">Pago</span>
+                        <span th:unless="${expense.isPaid}" class="status pending">Pendente</span>
+                    </td>
+
+                    <td data-label="Observação"
+                        class="note-cell"
+                        th:text="${expense.note != null and !#strings.isEmpty(expense.note) ? expense.note : '-'}">
+                        -
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
