@@ -2,6 +2,7 @@ package br.com.maikonspo.consumo.infra.gateway.expense
 
 import jakarta.persistence.*
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -15,17 +16,29 @@ class WaterExpenseEntity(
     @Column(name = "user_id", nullable = false)
     var userId: Long,
 
-    @Column(nullable = false)
-    var month: Int,
+    @Column(name = "reference_date", nullable = false)
+    var referenceDate: LocalDate,
 
-    @Column(nullable = false)
-    var year: Int,
+    @Column(name = "due_date", nullable = false)
+    var dueDate: LocalDate,
 
-    @Column(nullable = false)
-    var amount: BigDecimal,
+    @Column(name = "total_amount", nullable = false)
+    var totalAmount: BigDecimal,
 
     @Column(name = "consumption_m3")
-    var consumptionInCubicMeters: Double?,
+    var consumptionM3: Double?,
+
+    @Column(name = "water_amount")
+    var waterAmount: BigDecimal?,
+
+    @Column(name = "sewage_amount")
+    var sewageAmount: BigDecimal?,
+
+    @Column(name = "meter_reading")
+    var meterReading: Double?,
+
+    @Column(name = "is_paid", nullable = false)
+    var isPaid: Boolean,
 
     @Column
     var note: String?,

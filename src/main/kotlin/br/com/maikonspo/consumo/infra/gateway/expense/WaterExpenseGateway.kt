@@ -1,7 +1,7 @@
 package br.com.maikonspo.consumo.infra.gateway.expense
 
 import br.com.maikonspo.consumo.core.entity.WaterExpense
-import br.com.maikonspo.consumo.core.port.FindWaterExpenseByUserAndMonthPort
+import br.com.maikonspo.consumo.core.port.FindWaterExpenseByUserAndReferenceDatePort
 import br.com.maikonspo.consumo.core.port.FindWaterExpensesByUserPort
 import br.com.maikonspo.consumo.core.port.SaveWaterExpensePort
 import org.springframework.stereotype.Component
@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component
 @Component
 class WaterExpenseGateway(
     private val repository: WaterExpenseRepository
-) : SaveWaterExpensePort, FindWaterExpenseByUserAndMonthPort, FindWaterExpensesByUserPort {
+) : SaveWaterExpensePort,
+    FindWaterExpenseByUserAndReferenceDatePort,
+    FindWaterExpensesByUserPort {
 
     override fun save(expense: WaterExpense): WaterExpense {
         val entity = WaterExpenseConverter.toEntity(expense)
@@ -17,17 +19,16 @@ class WaterExpenseGateway(
         return WaterExpenseConverter.toDomain(saved)
     }
 
-    override fun findByUserIdAndMonth(
+    override fun findByUserIdAndReferenceDate(
         userId: Long,
-        month: Int,
-        year: Int
+        referenceDate: java.time.LocalDate
     ): WaterExpense? {
-        val entity = repository.findByUserIdAndMonthAndYear(userId, month, year)
+        val entity = repository.findByUserIdAndReferenceDate(userId, referenceDate)
         return if (entity != null) WaterExpenseConverter.toDomain(entity) else null
     }
 
     override fun findByUserId(userId: Long): List<WaterExpense> {
-        return repository.findAllByUserIdOrderByYearDescMonthDesc(userId)
+        return repository.findAllByUserIdOrderByReferenceDateDesc(userId)
             .map(WaterExpenseConverter::toDomain)
     }
 }

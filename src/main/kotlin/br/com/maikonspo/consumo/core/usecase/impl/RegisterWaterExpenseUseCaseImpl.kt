@@ -3,7 +3,7 @@ package br.com.maikonspo.consumo.core.usecase.impl
 import br.com.maikonspo.consumo.core.entity.WaterExpense
 import br.com.maikonspo.consumo.core.entity.request.RegisterWaterExpenseRequest
 import br.com.maikonspo.consumo.core.exception.WaterExpenseAlreadyExistsException
-import br.com.maikonspo.consumo.core.port.FindWaterExpenseByUserAndMonthPort
+import br.com.maikonspo.consumo.core.port.FindWaterExpenseByUserAndReferenceDatePort
 import br.com.maikonspo.consumo.core.port.SaveWaterExpensePort
 import br.com.maikonspo.consumo.core.usecase.RegisterWaterExpenseUseCase
 import org.springframework.stereotype.Service
@@ -12,14 +12,13 @@ import java.time.LocalDateTime
 @Service
 class RegisterWaterExpenseUseCaseImpl(
     private val saveWaterExpensePort: SaveWaterExpensePort,
-    private val findWaterExpenseByUserAndMonthPort: FindWaterExpenseByUserAndMonthPort
+    private val findWaterExpenseByUserAndReferenceDatePort: FindWaterExpenseByUserAndReferenceDatePort
 ) : RegisterWaterExpenseUseCase {
 
     override fun execute(request: RegisterWaterExpenseRequest): WaterExpense {
-        val existingExpense = findWaterExpenseByUserAndMonthPort.findByUserIdAndMonth(
+        val existingExpense = findWaterExpenseByUserAndReferenceDatePort.findByUserIdAndReferenceDate(
             userId = request.userId,
-            month = request.month,
-            year = request.year
+            referenceDate = request.referenceDate
         )
 
         if (existingExpense != null) {
@@ -29,10 +28,14 @@ class RegisterWaterExpenseUseCaseImpl(
         val expense = WaterExpense(
             id = null,
             userId = request.userId,
-            month = request.month,
-            year = request.year,
-            amount = request.amount,
-            consumptionInCubicMeters = request.consumptionInCubicMeters,
+            referenceDate = request.referenceDate,
+            dueDate = request.dueDate,
+            totalAmount = request.totalAmount,
+            consumptionM3 = request.consumptionM3,
+            waterAmount = request.waterAmount,
+            sewageAmount = request.sewageAmount,
+            meterReading = request.meterReading,
+            isPaid = request.isPaid,
             note = request.note,
             createdDate = LocalDateTime.now()
         )

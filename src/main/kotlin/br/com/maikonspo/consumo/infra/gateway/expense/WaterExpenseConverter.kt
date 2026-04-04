@@ -8,10 +8,14 @@ object WaterExpenseConverter {
         return WaterExpenseEntity(
             id = domain.id,
             userId = domain.userId,
-            month = domain.month,
-            year = domain.year,
-            amount = domain.amount,
-            consumptionInCubicMeters = domain.consumptionInCubicMeters,
+            referenceDate = domain.referenceDate,
+            dueDate = domain.dueDate,
+            totalAmount = domain.totalAmount,
+            consumptionM3 = domain.consumptionM3,
+            waterAmount = domain.waterAmount,
+            sewageAmount = domain.sewageAmount,
+            meterReading = domain.meterReading,
+            isPaid = domain.isPaid,
             note = domain.note,
             createdDate = domain.createdDate
         )
@@ -21,10 +25,14 @@ object WaterExpenseConverter {
         return WaterExpense(
             id = entity.id,
             userId = entity.userId,
-            month = entity.month,
-            year = entity.year,
-            amount = entity.amount,
-            consumptionInCubicMeters = entity.consumptionInCubicMeters,
+            referenceDate = entity.referenceDate,
+            dueDate = entity.dueDate,
+            totalAmount = entity.totalAmount,
+            consumptionM3 = entity.consumptionM3,
+            waterAmount = entity.waterAmount,
+            sewageAmount = entity.sewageAmount,
+            meterReading = entity.meterReading,
+            isPaid = entity.isPaid,
             note = entity.note,
             createdDate = entity.createdDate
         )

@@ -1,10 +1,9 @@
-package br.com.maikonspo.consumo.infra.delivery
+package br.com.maikonspo.consumo.infra.entrypoint.expense
+
 
 import br.com.maikonspo.consumo.core.entity.request.RegisterWaterExpenseRequest
 import br.com.maikonspo.consumo.core.usecase.FindWaterExpensesByUserUseCase
 import br.com.maikonspo.consumo.core.usecase.RegisterWaterExpenseUseCase
-import br.com.maikonspo.consumo.infra.entrypoint.expense.RegisterWaterExpenseDto
-import br.com.maikonspo.consumo.infra.entrypoint.expense.WaterExpenseResponseDto
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,10 +22,14 @@ class WaterExpenseController(
     fun create(@RequestBody dto: RegisterWaterExpenseDto): WaterExpenseResponseDto {
         val request = RegisterWaterExpenseRequest(
             userId = dto.userId,
-            month = dto.month,
-            year = dto.year,
-            amount = dto.amount,
-            consumptionInCubicMeters = dto.consumptionInCubicMeters,
+            referenceDate = dto.referenceDate,
+            dueDate = dto.dueDate,
+            totalAmount = dto.totalAmount,
+            consumptionM3 = dto.consumptionM3,
+            waterAmount = dto.waterAmount,
+            sewageAmount = dto.sewageAmount,
+            meterReading = dto.meterReading,
+            isPaid = dto.isPaid,
             note = dto.note
         )
 
@@ -35,10 +38,14 @@ class WaterExpenseController(
         return WaterExpenseResponseDto(
             id = expense.id,
             userId = expense.userId,
-            month = expense.month,
-            year = expense.year,
-            amount = expense.amount,
-            consumptionInCubicMeters = expense.consumptionInCubicMeters,
+            referenceDate = expense.referenceDate,
+            dueDate = expense.dueDate,
+            totalAmount = expense.totalAmount,
+            consumptionM3 = expense.consumptionM3,
+            waterAmount = expense.waterAmount,
+            sewageAmount = expense.sewageAmount,
+            meterReading = expense.meterReading,
+            isPaid = expense.isPaid,
             note = expense.note,
             createdDate = expense.createdDate
         )
@@ -51,10 +58,14 @@ class WaterExpenseController(
                 WaterExpenseResponseDto(
                     id = expense.id,
                     userId = expense.userId,
-                    month = expense.month,
-                    year = expense.year,
-                    amount = expense.amount,
-                    consumptionInCubicMeters = expense.consumptionInCubicMeters,
+                    referenceDate = expense.referenceDate,
+                    dueDate = expense.dueDate,
+                    totalAmount = expense.totalAmount,
+                    consumptionM3 = expense.consumptionM3,
+                    waterAmount = expense.waterAmount,
+                    sewageAmount = expense.sewageAmount,
+                    meterReading = expense.meterReading,
+                    isPaid = expense.isPaid,
                     note = expense.note,
                     createdDate = expense.createdDate
                 )

@@ -1,14 +1,14 @@
 package br.com.maikonspo.consumo.infra.gateway.expense
 
 import org.springframework.data.jpa.repository.JpaRepository
+import java.time.LocalDate
 
 interface WaterExpenseRepository : JpaRepository<WaterExpenseEntity, Long> {
 
-    fun findByUserIdAndMonthAndYear(
+    fun findByUserIdAndReferenceDate(
         userId: Long,
-        month: Int,
-        year: Int
+        referenceDate: LocalDate
     ): WaterExpenseEntity?
 
-    fun findAllByUserIdOrderByYearDescMonthDesc(userId: Long): List<WaterExpenseEntity>
+    fun findAllByUserIdOrderByReferenceDateDesc(userId: Long): List<WaterExpenseEntity>
 }
