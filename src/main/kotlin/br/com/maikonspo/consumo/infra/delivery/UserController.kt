@@ -1,6 +1,6 @@
 package br.com.maikonspo.consumo.infra.delivery
 
-import br.com.maikonspo.consumo.core.entity.CreateUserRequest
+import br.com.maikonspo.consumo.core.entity.request.CreateUserRequest
 import br.com.maikonspo.consumo.core.usecase.CreateUserUseCase
 import br.com.maikonspo.consumo.infra.entrypoint.user.CreateUserDto
 import br.com.maikonspo.consumo.infra.entrypoint.user.UserResponseDto

@@ -1,4 +1,4 @@
-package br.com.maikonspo.consumo.core.entity
+package br.com.maikonspo.consumo.core.entity.request
 
 data class CreateUserRequest(
     val name : String,

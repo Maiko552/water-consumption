@@ -1,6 +1,6 @@
 package br.com.maikonspo.consumo.core.usecase.impl
 
-import br.com.maikonspo.consumo.core.entity.CreateUserRequest
+import br.com.maikonspo.consumo.core.entity.request.CreateUserRequest
 import br.com.maikonspo.consumo.core.entity.User
 import br.com.maikonspo.consumo.core.exception.UserAlreadyExistsException
 import br.com.maikonspo.consumo.core.port.EncryptPasswordPort
