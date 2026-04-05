@@ -12,3 +12,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+security:
+  jwt:
+    secret: minha-chave-jwt-super-segura-12345678901234567890
+    expiration: 86400000
