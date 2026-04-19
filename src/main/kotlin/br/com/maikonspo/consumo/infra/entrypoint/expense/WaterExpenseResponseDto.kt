@@ -6,7 +6,6 @@ import java.time.LocalDateTime
 
 data class WaterExpenseResponseDto(
     val id: Long?,
-    val userId: Long,
     val referenceDate: LocalDate,
     val dueDate: LocalDate,
     val totalAmount: BigDecimal,

@@ -1,50 +1,65 @@
-# 💧 Consumo de Água API
+# Consumo de Agua API
 
-API desenvolvida em **Kotlin + Spring Boot**, com arquitetura baseada em **Clean Architecture (DDD)**, para gerenciamento de gastos de consumo de água por usuário.
+API desenvolvida em Kotlin com Spring Boot para gerenciamento de consumo e contas de agua por usuario, com autenticacao JWT e organizacao inspirada em Clean Architecture.
 
----
+## Tecnologias
 
-## 🚀 Tecnologias utilizadas
+- Kotlin
+- Spring Boot
+- Spring Web MVC
+- Spring Security
+- Spring Data JPA
+- Thymeleaf
+- PostgreSQL
+- Maven
 
-* Kotlin
-* Spring Boot
-* Spring Security (JWT)
-* PostgreSQL
-* JPA / Hibernate
-* Maven
+## Arquitetura
 
----
+O projeto esta organizado em camadas para separar responsabilidades:
 
-## 🧱 Arquitetura
-
-O projeto segue uma organização baseada em **Clean Architecture**, separando responsabilidades:
-
-```
+```text
 config/
 core/
-  ├── entity/
-  ├── exception/
-  ├── port/
-  └── usecase/
+  entity/
+  exception/
+  port/
+  usecase/
 infra/
-  ├── entrypoint/
-  ├── gateway/
-  └── security/
+  delivery/
+  entrypoint/
+  gateway/
+  security/
 ```
 
----
+## Como rodar
 
-## 🔐 Autenticação
+Suba o banco com Docker:
 
-A autenticação é feita via **JWT (JSON Web Token)**.
-
-### 📌 Login
-
-```http
-POST /auth/login
+```bash
+docker compose up -d
 ```
 
-### Request:
+Depois inicie a aplicacao:
+
+```bash
+mvn spring-boot:run
+```
+
+Configuracao padrao em [application.yaml](/C:/Users/user/.codex/worktrees/7a16/consumo-agua-kotlin/src/main/resources/application.yaml:1):
+
+- Banco: `consumo_db`
+- Porta do Postgres: `5433`
+- Usuario: `postgres`
+- Senha: `postgres`
+
+## Fluxo de autenticacao
+
+1. Crie um usuario em `POST /user`.
+2. Faca login em `POST /auth/login`.
+3. Use o token retornado no header `Authorization: Bearer <token>`.
+4. As rotas de despesas usam sempre o usuario autenticado.
+
+Exemplo de login:
 
 ```json
 {
@@ -53,141 +68,92 @@ POST /auth/login
 }
 ```
 
-### Response:
+Resposta:
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIs...",
-  "type": "Bearer"
+  "token": "eyJhbGciOiJIUzI1NiIs..."
 }
 ```
 
----
+## Endpoints da API
 
-## 🔒 Uso do Token
+### `POST /user`
 
-Após autenticar, envie o token no header:
+Cria um novo usuario.
 
-```
-Authorization: Bearer SEU_TOKEN
-```
-
----
-
-## 📊 Endpoints
-
-### 🔹 Criar usuário
-
-```http
-POST /user
-```
-
----
-
-### 🔹 Login
-
-```http
-POST /auth/login
-```
-
----
-
-### 🔹 Registrar gasto de água
-
-```http
-POST /water-expenses
-```
-
----
-
-### 🔹 Buscar gastos por usuário
-
-```http
-GET /water-expenses/user/{userId}
-```
-
----
-
-## 📌 Estrutura do gasto de água
-
-Exemplo de payload:
+Exemplo de body:
 
 ```json
 {
-  "userId": 1,
-  "referenceDate": "2025-10-01",
-  "dueDate": "2025-10-15",
-  "totalAmount": 80.50,
-  "consumptionM3": 15,
-  "waterAmount": 45.00,
-  "sewageAmount": 35.50,
-  "meterReading": 1245,
+  "name": "Maria",
+  "email": "maria@email.com",
+  "password": "123456"
+}
+```
+
+### `POST /auth/login`
+
+Autentica o usuario e devolve um JWT.
+
+### `POST /api/water-expenses`
+
+Cria uma conta de agua para o usuario autenticado.
+
+Importante:
+- Nao envia `userId` no body.
+- O backend identifica o usuario pelo token JWT.
+
+Exemplo de body:
+
+```json
+{
+  "referenceDate": "2026-04-01",
+  "dueDate": "2026-04-10",
+  "totalAmount": 145.90,
+  "consumptionM3": 12.5,
+  "waterAmount": 80.00,
+  "sewageAmount": 65.90,
+  "meterReading": 235.7,
   "isPaid": false,
-  "note": "Aumento devido à lavagem do quintal"
+  "note": "Conta do mes de abril"
 }
 ```
 
----
+### `GET /api/water-expenses`
 
-## ⚙️ Configuração
+Lista as contas do usuario autenticado.
 
-### application.yml
+Importante:
+- Nao recebe `userId` na URL.
+- O backend retorna apenas as despesas do usuario autenticado.
 
-```yaml
-security:
-  jwt:
-    secret: sua-chave-super-segura
-    expiration: 86400000
+## Interface web
+
+Rotas HTML com Thymeleaf:
+
+- `GET /login`
+- `GET /water-expenses`
+- `GET /water-expenses/form`
+- `POST /water-expenses/save`
+
+O formulario web tambem nao envia `userId`; o backend usa o usuario autenticado.
+
+## Testes
+
+Os testes usam H2 em memoria por meio de [src/test/resources/application.yaml](/C:/Users/user/.codex/worktrees/7a16/consumo-agua-kotlin/src/test/resources/application.yaml:1), para nao depender do PostgreSQL local.
+
+```bash
+mvn test
 ```
 
----
+## Melhorias futuras
 
-## 🧪 Testes
+- Validacoes com Bean Validation
+- Tratamento global de excecoes
+- Relatorios e metricas de consumo
+- Integracao com frontend ou mobile
 
-Recomenda-se utilizar:
+## Autor
 
-* Postman
-* Insomnia
-
-Fluxo:
-
-1. Criar usuário
-2. Fazer login
-3. Copiar token
-4. Usar Bearer Token nos endpoints protegidos
-
----
-
-## 🚧 Melhorias futuras
-
-* [ ] Remover `userId` do request e usar usuário do token
-* [ ] Validações com Bean Validation
-* [ ] Tratamento global de exceções (ControllerAdvice)
-* [ ] Relatórios e métricas de consumo
-* [ ] Integração com frontend/mobile
-
----
-
-## 📱 Próximos passos
-
-* Criar frontend web (HTML/JS)
-* Adaptar API para uso mobile (Android/iOS)
-
----
-
-## 👨‍💻 Autor
-
-Desenvolvido por **Maikon Sposito**
-
----
-
-## 📌 Objetivo
-
-Projeto criado com foco em:
-
-* Aprendizado de Kotlin
-* Prática de arquitetura limpa
-* Implementação de autenticação JWT
-* Preparação para aplicações reais (mobile/web)
-
----
+Desenvolvido por Maikon Sposito.

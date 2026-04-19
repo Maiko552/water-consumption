@@ -4,7 +4,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class RegisterWaterExpenseDto(
-    val userId: Long,
     val referenceDate: LocalDate,
     val dueDate: LocalDate,
     val totalAmount: BigDecimal,
