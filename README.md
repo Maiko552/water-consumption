@@ -1,6 +1,6 @@
-# Consumo de Agua Kotlin
+# Consumo de Agua API
 
-Aplicacao Spring Boot em Kotlin para cadastro de usuarios, autenticacao com JWT e controle de contas de agua.
+API desenvolvida em Kotlin com Spring Boot para gerenciamento de consumo e contas de agua por usuario, com autenticacao JWT e organizacao inspirada em Clean Architecture.
 
 ## Tecnologias
 
@@ -11,6 +11,25 @@ Aplicacao Spring Boot em Kotlin para cadastro de usuarios, autenticacao com JWT 
 - Spring Data JPA
 - Thymeleaf
 - PostgreSQL
+- Maven
+
+## Arquitetura
+
+O projeto esta organizado em camadas para separar responsabilidades:
+
+```text
+config/
+core/
+  entity/
+  exception/
+  port/
+  usecase/
+infra/
+  delivery/
+  entrypoint/
+  gateway/
+  security/
+```
 
 ## Como rodar
 
@@ -36,9 +55,26 @@ Configuracao padrao em [application.yaml](/C:/Users/user/.codex/worktrees/7a16/c
 ## Fluxo de autenticacao
 
 1. Crie um usuario em `POST /user`.
-2. Faça login em `POST /auth/login`.
+2. Faca login em `POST /auth/login`.
 3. Use o token retornado no header `Authorization: Bearer <token>`.
 4. As rotas de despesas usam sempre o usuario autenticado.
+
+Exemplo de login:
+
+```json
+{
+  "email": "usuario@email.com",
+  "password": "123456"
+}
+```
+
+Resposta:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIs..."
+}
+```
 
 ## Endpoints da API
 
@@ -59,15 +95,6 @@ Exemplo de body:
 ### `POST /auth/login`
 
 Autentica o usuario e devolve um JWT.
-
-Exemplo de body:
-
-```json
-{
-  "email": "maria@email.com",
-  "password": "123456"
-}
-```
 
 ### `POST /api/water-expenses`
 
@@ -110,7 +137,7 @@ Rotas HTML com Thymeleaf:
 - `GET /water-expenses/form`
 - `POST /water-expenses/save`
 
-O formulario web tambem nao envia mais `userId`; o backend usa o usuario autenticado.
+O formulario web tambem nao envia `userId`; o backend usa o usuario autenticado.
 
 ## Testes
 
@@ -119,3 +146,14 @@ Os testes usam H2 em memoria por meio de [src/test/resources/application.yaml](/
 ```bash
 mvn test
 ```
+
+## Melhorias futuras
+
+- Validacoes com Bean Validation
+- Tratamento global de excecoes
+- Relatorios e metricas de consumo
+- Integracao com frontend ou mobile
+
+## Autor
+
+Desenvolvido por Maikon Sposito.
