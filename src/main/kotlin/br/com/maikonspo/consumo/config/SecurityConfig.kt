@@ -26,12 +26,22 @@ class SecurityConfig(
         http
             .csrf { it.disable() }
             .sessionManagement {
-                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                it.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             }
             .authorizeHttpRequests {
                 it.requestMatchers(HttpMethod.POST, "/user").permitAll()
                 it.requestMatchers("/auth/login").permitAll()
+                it.requestMatchers("/", "/login", "/error").permitAll()
                 it.anyRequest().authenticated()
+            }
+            .formLogin {
+                it.loginPage("/login")
+                it.defaultSuccessUrl("/water-expenses", true)
+                it.permitAll()
+            }
+            .logout {
+                it.logoutSuccessUrl("/login?logout")
+                it.permitAll()
             }
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
