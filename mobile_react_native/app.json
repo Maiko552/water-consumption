@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Water Consumption",
+    "slug": "water-consumption-cross-platform",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#f3f8ff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maikonspo.waterconsumption"
+    },
+    "android": {
+      "package": "com.maikonspo.waterconsumption"
+    },
+    "extra": {
+      "apiUrl": "http://192.168.1.18:8080"
+    }
+  }
+}
